@@ -1,252 +1,45 @@
---// WHITELIST SYSTEM by Fox VN (SECURE)
+-- MAINTENANCE SCREEN SCRIPT
+-- By ChatGPT
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
--- 🔒 USERID ĐƯỢC PHÉP
-local Whitelist = {
-7329059153,
-4661752921,
-9286440850,
-8555935261,
-10268059199,
-10247756070,	
-}
-
-local function isWhitelisted(id)
-for _, v in ipairs(Whitelist) do
-if v == id then
-return true
-end
-end
-return false
+-- Xóa GUI cũ nếu có
+if playerGui:FindFirstChild("MaintenanceGui") then
+    playerGui.MaintenanceGui:Destroy()
 end
 
-if not isWhitelisted(LocalPlayer.UserId) then
+-- Tạo ScreenGui
 local gui = Instance.new("ScreenGui")
-gui.Name = "FoxVN_Whitelist"
+gui.Name = "MaintenanceGui"
 gui.ResetOnSpawn = false
-gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+gui.IgnoreGuiInset = true
+gui.Parent = playerGui
 
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 420, 0, 200)
-frame.Position = UDim2.new(0.5, -210, 0.5, -100)
-frame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+-- Frame che full màn hình
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.Position = UDim2.new(0, 0, 0, 0)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BorderSizePixel = 0
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
+frame.Parent = gui
 
-local text = Instance.new("TextLabel", frame)
-text.Size = UDim2.new(1, -20, 1, -20)
-text.Position = UDim2.new(0, 10, 0, 10)
+-- Chữ bảo trì
+local text = Instance.new("TextLabel")
+text.Size = UDim2.new(1, 0, 1, 0)
+text.Position = UDim2.new(0, 0, 0, 0)
 text.BackgroundTransparency = 1
-text.TextWrapped = true
+text.Text = "⚠ SCRIPT ĐANG BẢO TRÌ ⚠\nVui lòng quay lại sau"
+text.TextColor3 = Color3.fromRGB(255, 255, 255)
 text.TextScaled = true
 text.Font = Enum.Font.GothamBold
-text.TextColor3 = Color3.fromRGB(255,80,80)
-text.Text = "❌ BẠN KHÔNG CÓ QUYỀN DÙNG FOX VN HUB\n\nLiên hệ chủ script để được cấp whitelist"
+text.Parent = frame
 
--- ❌ CHẶN CỨNG SCRIPT
-while true do
-task.wait()
-end
-
-end
-
-print("✅ FOX VN WHITELIST PASS")
-
--- SCRIPT: FOX VN - BDVN2 (v3.7) - RAINBOW DARK EDITION
--- Cập nhật: INFINITE JUMP, ESP NAMES, CÂN BẰNG GUI
--- Tác Giả: Lâm Mod & Gemini
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local Lighting = game:GetService("Lighting")
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
-
-local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-
--- Biến điều khiển
-local currentSpeed = 16
-local noclip = false
-local shiftLockEnabled = false
-local killAllActive = false
-local isMinimized = false
-local domainSkyActive = false
-local isRagdoll = false
-local infJump = false
-local espActive = false
-
-
----
-
--- HÀM TIỆN ÍCH
-
-local function applyRainbowBorder(instance)
-local stroke = Instance.new("UIStroke")
-stroke.Thickness = 2
-stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-stroke.Parent = instance
-RunService.RenderStepped:Connect(function()
-stroke.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-end)
-end
-
-local function createBtn(parent, x, y, text, width)
-local btn = Instance.new("TextButton", parent)
-btn.Size = UDim2.new(0, width or 235, 0, 32)
-btn.Position = UDim2.new(0, x, 0, y)
-btn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-btn.TextColor3 = Color3.new(1, 1, 1)
-btn.Text = text
-btn.Font = Enum.Font.GothamBold
-btn.TextSize = 11
-Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-applyRainbowBorder(btn)
-return btn
-end
-
-
----
-
--- GIAO DIỆN CHÍNH
-
-local mainScreenGui = Instance.new("ScreenGui", PlayerGui)
-mainScreenGui.Name = "FoxVN_Final_V3_7"
-mainScreenGui.ResetOnSpawn = false
-
-local mainFrame = Instance.new("Frame", mainScreenGui)
-mainFrame.Size = UDim2.new(0, 520, 0, 420)
-mainFrame.Position = UDim2.new(0.5, -260, 0.5, -210)
-mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-mainFrame.Active = true
-mainFrame.Draggable = true
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
-applyRainbowBorder(mainFrame)
-
-local mainTitle = Instance.new("TextLabel", mainFrame)
-mainTitle.Size = UDim2.new(1, 0, 0, 40)
-mainTitle.BackgroundTransparency = 1
-mainTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-mainTitle.Text = "🦊 FOX VN HUB V3.7 - ULTIMATE EDITION 🦊"
-mainTitle.Font = Enum.Font.GothamBold
-mainTitle.TextSize = 16
-
-local container = Instance.new("Frame", mainFrame)
-container.Size = UDim2.new(1, 0, 1, -50)
-container.Position = UDim2.new(0, 0, 0, 45)
-container.BackgroundTransparency = 1
-
-
----
-
--- CỘT TRÁI (8 CHỨC NĂNG)
-
-local lX = 20
-createBtn(container, lX, 0, "Fly GUI").MouseButton1Click:Connect(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))() end)
-createBtn(container, lX, 40, "Music GUI").MouseButton1Click:Connect(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Roblox-HttpSpy/my-Garbage/refs/heads/main/FeMusicExploit.lua"))() end)
-createBtn(container, lX, 80, "⚠️ GEJONG").MouseButton1Click:Connect(function()
-local b = Instance.new("Frame", mainScreenGui) b.Size = UDim2.new(1,0,1,0) b.BackgroundColor3 = Color3.fromRGB(0,100,255) b.ZIndex = 10
-local t = Instance.new("TextLabel", b) t.Size = UDim2.new(1,0,0,100) t.Position = UDim2.new(0,0,0.5,-50) t.Text = "Script béo quá nổ rồi" t.TextColor3 = Color3.new(1,1,1) t.Font = Enum.Font.GothamBold t.TextSize = 40
-task.wait(2) b:Destroy()
-end)
-createBtn(container, lX, 120, "🤸 BACKFLIP").MouseButton1Click:Connect(function()
-local hrp = LocalPlayer.Character.HumanoidRootPart
-local v = Instance.new("BodyVelocity", hrp) v.MaxForce = Vector3.new(0, math.huge, 0) v.Velocity = Vector3.new(0, 45, 0)
-local r = Instance.new("BodyAngularVelocity", hrp) r.MaxTorque = Vector3.new(math.huge, math.huge, math.huge) r.AngularVelocity = hrp.CFrame.RightVector * -15
-task.wait(0.5) v:Destroy() task.wait(0.3) r:Destroy()
-end)
-local rBtn = createBtn(container, lX, 160, "🦴 RAGDOLL: OFF")
-rBtn.MouseButton1Click:Connect(function() isRagdoll = not isRagdoll rBtn.Text = isRagdoll and "🦴 RAGDOLL: ON" or "🦴 RAGDOLL: OFF" end)
-
-createBtn(container, lX, 200, "💀 KILL ALL: OFF").MouseButton1Click:Connect(function() killAllActive = not killAllActive end)
-
--- 2 CHỨC NĂNG TỰ CHỌN (Để làm đầy cột trái)
-local jBtn = createBtn(container, lX, 240, "🚀 INF JUMP: OFF")
-jBtn.MouseButton1Click:Connect(function() infJump = not infJump jBtn.Text = infJump and "🚀 INF JUMP: ON" or "🚀 INF JUMP: OFF" end)
-
-local eBtn = createBtn(container, lX, 280, "👁️ ESP NAME: OFF")
-eBtn.MouseButton1Click:Connect(function()
-espActive = not espActive
-eBtn.Text = espActive and "👁️ ESP NAME: ON" or "👁️ ESP NAME: OFF"
-if not espActive then
-for _, v in pairs(Players:GetPlayers()) do
-if v.Character and v.Character:FindFirstChild("EspPart") then v.Character.EspPart:Destroy() end
-end
-end
-end)
-
-
----
-
--- CỘT PHẢI (8 CHỨC NĂNG)
-
-local rX = 265
-local speedDisp = createBtn(container, rX, 0, "Tốc độ: 16")
-createBtn(container, rX, 40, "Speed Run +").MouseButton1Click:Connect(function() currentSpeed = currentSpeed + 20 speedDisp.Text = "Tốc độ: "..currentSpeed end)
-createBtn(container, rX, 80, "Speed Run -").MouseButton1Click:Connect(function() currentSpeed = math.max(16, currentSpeed - 20) speedDisp.Text = "Tốc độ: "..currentSpeed end)
-createBtn(container, rX, 120, "🔴 Red Sky").MouseButton1Click:Connect(function() domainSkyActive = false Lighting.OutdoorAmbient = Color3.fromRGB(255, 0, 0) end)
-createBtn(container, rX, 160, "🔵 Blue Sky").MouseButton1Click:Connect(function() domainSkyActive = false Lighting.OutdoorAmbient = Color3.fromRGB(0, 100, 255) end)
-createBtn(container, rX, 200, "⚪ Gray Sky").MouseButton1Click:Connect(function() domainSkyActive = false Lighting.OutdoorAmbient = Color3.fromRGB(50, 50, 50) end)
-createBtn(container, rX, 240, "🌈 DOMAIN SKY").MouseButton1Click:Connect(function() domainSkyActive = not domainSkyActive end)
-createBtn(container, rX, 280, "♻️ Reset Sky").MouseButton1Click:Connect(function() domainSkyActive = false Lighting.OutdoorAmbient = Color3.fromRGB(127,127,127) end)
-
-
----
-
--- HỆ THỐNG VẬN HÀNH
-
-UserInputService.JumpRequest:Connect(function()
-if infJump then LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping") end
-end)
-
-RunService.RenderStepped:Connect(function()
-local char = LocalPlayer.Character
-if char and char:FindFirstChild("HumanoidRootPart") then
-char.Humanoid.WalkSpeed = currentSpeed
-char.Humanoid.PlatformStand = isRagdoll
-
-if domainSkyActive then Lighting.OutdoorAmbient = Color3.fromHSV(tick() % 5 / 5, 1, 1) end
-
-if killAllActive then
-for _, p in pairs(Players:GetPlayers()) do
-if p ~= LocalPlayer and p.Character then
-local tool = char:FindFirstChildOfClass("Tool")
-if tool and tool:FindFirstChild("Handle") then
-tool:Activate()
-for _, part in pairs(p.Character:GetChildren()) do
-if part:IsA("BasePart") then firetouchinterest(tool.Handle, part, 0) firetouchinterest(tool.Handle, part, 1) end
-end
-end
-end
-end
-end
-
--- ESP Names Logic
-if espActive then
-for _, p in pairs(Players:GetPlayers()) do
-if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Head") then
-if not p.Character:FindFirstChild("EspPart") then
-local b = Instance.new("BillboardGui", p.Character)
-b.Name = "EspPart" b.AlwaysOnTop = true b.Size = UDim2.new(0, 100, 0, 50) b.ExtentsOffset = Vector3.new(0, 3, 0)
-local t = Instance.new("TextLabel", b) t.Size = UDim2.new(1, 0, 1, 0) t.BackgroundTransparency = 1 t.TextColor3 = Color3.new(1, 1, 1) t.TextStrokeTransparency = 0 t.Font = Enum.Font.GothamBold t.TextSize = 14 t.Text = p.Name
-end
-end
-end
-end
-
-end
-
-end)
-
--- Nút Thu nhỏ
-local minBtn = createBtn(mainFrame, 485, 5, "-", 30)
-minBtn.MouseButton1Click:Connect(function()
-isMinimized = not isMinimized
-mainFrame:TweenSize(isMinimized and UDim2.new(0, 520, 0, 40) or UDim2.new(0, 520, 0, 420), "Out", "Quad", 0.3, true)
-container.Visible = not isMinimized
-minBtn.Text = isMinimized and "+" or "-"
-end)
+-- Chặn thao tác
+local blocker = Instance.new("TextButton")
+blocker.Size = UDim2.new(1, 0, 1, 0)
+blocker.Position = UDim2.new(0, 0, 0, 0)
+blocker.BackgroundTransparency = 1
+blocker.Text = ""
+blocker.AutoButtonColor = false
+blocker.Parent = frame
